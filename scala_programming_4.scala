@@ -9,3 +9,29 @@ def adder(num1:Int, num2:Int): Int = {
 }
 
 adder(4,5)
+
+def greetName(name: String): String = {
+  return s"Hello $name"
+}
+
+val fullgreet = greetName("Jose")
+println(fullgreet)
+
+def isPrime(numcheck:Int): Boolean = {
+  for(n <- Range(2, numcheck))  {
+    if(numcheck%n == 0){
+      return false
+    }
+  }
+  return true
+}
+
+println(isPrime(10))
+println(isPrime(7))
+
+val numbers = List(1,2,3,4)
+
+def check(nums:List[Int]): List[Int] = {
+  return nums
+}
+println(check(numbers))
