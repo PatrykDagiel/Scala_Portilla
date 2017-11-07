@@ -1,15 +1,16 @@
 // DATAFRAME PROJECT
 // Use the Netflix_2011_2016.csv file to Answer and complete
 // the commented tasks below!
-
 // Start a simple Spark Session
+import org.apache.spark.sql.SparkSession
+val spark = SparkSession.builder().getOrCreate()
 
 // Load the Netflix Stock CSV File, have Spark infer the data types.
-
+val df = spark.read.option("header","true").option("inferSchema","true").csv("Netflix_2011_2016.csv")
 // What are the column names?
-
+df.show()
 // What does the Schema look like?
-
+df.printSchema()
 // Print out the first 5 columns.
 
 // Use describe() to learn about the DataFrame.
