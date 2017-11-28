@@ -2,6 +2,7 @@
 // Use the Netflix_2011_2016.csv file to Answer and complete
 // the commented tasks below!
 // Start a simple Spark Session
+
 import org.apache.spark.sql.SparkSession
 val spark = SparkSession.builder().getOrCreate()
 
