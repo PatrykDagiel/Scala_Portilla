@@ -4,11 +4,12 @@
 /////////////////////////////////////////
 
 // Import LinearRegression
-
+import org.apache.spark.ml.evaluation.*
+import org.apache.spark.ml.regression.*
+import org.apache.spark.ml.tuning.*
 // Optional: Use the following code below to set the Error reporting
 import org.apache.log4j._
 Logger.getLogger("org").setLevel(Level.ERROR)
-
 
 // Start a simple Spark Session
 
