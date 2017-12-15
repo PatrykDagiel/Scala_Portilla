@@ -23,15 +23,19 @@
 //////////////////////////////////
 
 // Import SparkSession
+import org.apache.spark.sql.SparkSession
 
 // Optional: Use the following code below to set the Error reporting
+import org.apache.log4j._
+Logger.getLogger("org").setLevel(Level.ERROR)
 
+val spark = SparkSession.builder().getOrCreate()
 // Create a Spark Session Instance
-
+import org.apache.spark.ml.clustering.KMeans
 // Import Kmeans clustering Algorithm
-
+val dataset = spark.read.option("header", "true").option("inferSchema","true").csv("Wholesale customers data.csv")
 // Load the Wholesale Customers Data
-
+val feature_data = dataset.select()
 // Select the following columns for the training set:
 // Fresh, Milk, Grocery, Frozen, Detergents_Paper, Delicassen
 // Cal this new subset feature_data
