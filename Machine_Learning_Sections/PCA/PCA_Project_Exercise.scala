@@ -94,14 +94,19 @@
 ////////////////////////////
 
 // Import Spark  and Create a Spark Session
-
+import org.apache.spark.sql.SparkSession
+val spark = SparkSession.builder().appName("PCA_test").getOrCreate()
 // Use Spark to read in the Cancer_Data file.
-
+val data = spark.read.option("header", "true").option("inferSchema","true").format("csv").load("Cancer_Data")
 // Print the Schema of the data
+data.printSchema()
 
 // Import PCA, VectorAssembler and StandardScaler from ml.feature
-
+import org.apache.spark.ml.feature.PCA
+import org.apache.spark.ml.feature.StandardScaler
+import org.apache.spark.ml.feature.VectorAssembler
 // Import Vectors from ml.linalg
+import org.apache.spark.ml.linalg.Vectors
 
 // Use VectorAssembler to convert the input columns of the cancer data
 // to a single output column of an array called "features"
@@ -118,8 +123,10 @@ val colnames = (Array("mean radius", "mean texture", "mean perimeter", "mean are
 "worst texture", "worst perimeter", "worst area", "worst smoothness", "worst compactness", "worst concavity",
 "worst concave points", "worst symmetry", "worst fractal dimension"))
 
+val assembler = new VectorAssembler().setInputCols(colnames).setOutputCol("features")
 
 // Use the assembler to transform our DataFrame to a single column: features
+val output = assembler.transform(data).select($"features")
 
 // Often its a good idea to normalize each feature to have unit standard
 // deviation and/or zero mean,vwhen using PCA.
@@ -132,24 +139,31 @@ val colnames = (Array("mean radius", "mean texture", "mean perimeter", "mean are
 // Create a new StandardScaler() object called scaler
 // Set the input to the features column and the ouput to a column called
 // scaledFeatures
+val scaler = new StandardScaler().setInputCol("features").setOutputCol("scaledFeatures").setWithStd(true).setWithMean(false)
 
 // Compute summary statistics by fitting the StandardScaler.
 // Basically create a new object called scalerModel by using scaler.fit()
 // on the output of the VectorAssembler
-
+val scalerModel = scaler.fit(output)
 // Normalize each feature to have unit standard deviation.
 // Use transform() off of this scalerModel object to create your scaledData
-
+val scaledData = scalerModel.transform(output)
 // Now its time to use PCA to reduce the features to some principal components
 
 // Create a new PCA() object that will take in the scaledFeatures
 // and output the pcs features, use 4 principal components
 // Then fit this to the scaledData
-
+val pca = (new PCA()
+  .setInputCol("scaledFeatures")
+  .setOutputCol("pca_features")
+  .setK(4)
+  .fit(scaledData))
 // Once your pca has been created and fit, transform the scaledData
 // Call this new dataframe pcaDF
-
+val pcaDF = pca.transform(scaledData)
 // Show the new pcaFeatures
-
+val result = pcaDF.select("pca_features")
+result.show()
 // Use .head() to confirm that your output column Array of pcaFeatures
 // only has 4 principal components
+result.head(1)
